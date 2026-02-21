@@ -1,0 +1,9 @@
+{
+  "name": "planning-benchmark-suite",
+  "version": "0.1",
+  "dependencies": [
+    "eigen3",
+    "nlohmann-json",
+    "gtest"
+  ]
+}
