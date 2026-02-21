@@ -14,13 +14,14 @@ TEST(StructureTest, StateStoresXY) {
   EXPECT_DOUBLE_EQ(s.y, 2.0);
 }
 
-TEST(StructureTest, PlannerStubReturnsEmptyPath) {
+TEST(StructureTest, DijkstraFindsPathOnEmptyGrid) {
   pbs::GridEnvironment env(10, 10);
   pbs::DijkstraPlanner planner;
   pbs::Path path =
       planner.solve(env, pbs::State(0, 0), pbs::State(9, 9));
-  EXPECT_FALSE(path.success);
-  EXPECT_TRUE(path.states.empty());
+  EXPECT_TRUE(path.success);
+  EXPECT_FALSE(path.states.empty());
+  EXPECT_GE(path.length, 9.0);
 }
 
 TEST(StructureTest, PathEmpty) {

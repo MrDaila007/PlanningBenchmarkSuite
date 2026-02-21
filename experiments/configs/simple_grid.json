@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "experiments": [
+    {
+      "environment": {
+        "type": "grid",
+        "width": 20,
+        "height": 20,
+        "generator": "random_uniform",
+        "obstacle_density": 0.1,
+        "seed": 42
+      },
+      "planner": "astar",
+      "start": [0, 0],
+      "goal": [19, 19],
+      "repeats": 5
+    }
+  ]
+}

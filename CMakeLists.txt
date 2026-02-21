@@ -22,8 +22,10 @@ find_package(Threads REQUIRED)
 add_library(planning_benchmark
   src/core/state.cpp
   src/core/path.cpp
+  src/geometry/grid_collision_checker.cpp
   src/benchmark/benchmark_engine.cpp
   src/environment/grid_environment_stub.cpp
+  src/environment/map_generator.cpp
 )
 target_include_directories(planning_benchmark
   PUBLIC
@@ -33,7 +35,8 @@ target_link_libraries(planning_benchmark PUBLIC nlohmann_json::nlohmann_json)
 
 # Planners
 add_library(planners
-  src/planners/dijkstra_stub.cpp
+  src/planners/dijkstra.cpp
+  src/planners/astar.cpp
 )
 target_link_libraries(planners PUBLIC planning_benchmark)
 target_include_directories(planners PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
