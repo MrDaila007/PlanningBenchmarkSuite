@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "ci_path_length": [
+        27.45584412271572,
+        27.455844122715728
+      ],
+      "ci_time_ms": [
+        0.8902452285149803,
+        1.2068855714850197
+      ],
+      "mean_nodes": 45.0,
+      "mean_path_length": 27.455844122715725,
+      "mean_time_ms": 1.0485654,
+      "planner": "astar",
+      "repeats": 5,
+      "std_path_length": 3.972054645195637e-15,
+      "std_time_ms": 0.13774889714004976,
+      "success_rate": 1.0
+    }
+  ]
+}

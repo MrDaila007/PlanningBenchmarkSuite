@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "ci_path_length": [
+        27.45584412271572,
+        27.455844122715728
+      ],
+      "ci_time_ms": [
+        0.5867300844812567,
+        0.750672715518743
+      ],
+      "mean_nodes": 45.0,
+      "mean_path_length": 27.455844122715725,
+      "mean_time_ms": 0.6687013999999999,
+      "planner": "astar",
+      "repeats": 5,
+      "std_path_length": 3.972054645195637e-15,
+      "std_time_ms": 0.07132040221984169,
+      "success_rate": 1.0
+    },
+    {
+      "ci_path_length": [
+        27.45584412271572,
+        27.455844122715728
+      ],
+      "ci_time_ms": [
+        3.793552282792457,
+        4.6473177172075415
+      ],
+      "mean_nodes": 388.0,
+      "mean_path_length": 27.455844122715725,
+      "mean_time_ms": 4.220434999999999,
+      "planner": "dijkstra",
+      "repeats": 5,
+      "std_path_length": 3.972054645195637e-15,
+      "std_time_ms": 0.3714158654069585,
+      "success_rate": 1.0
+    },
+    {
+      "ci_path_length": [
+        26.93171219946131,
+        26.93171219946131
+      ],
+      "ci_time_ms": [
+        0.2946049377496772,
+        0.3097518622503228
+      ],
+      "mean_nodes": 21.0,
+      "mean_path_length": 26.93171219946131,
+      "mean_time_ms": 0.3021784,
+      "planner": "thetastar",
+      "repeats": 5,
+      "std_path_length": 0.0,
+      "std_time_ms": 0.006589407166050677,
+      "success_rate": 1.0
+    },
+    {
+      "ci_path_length": [
+        21.889209083497988,
+        21.889209083497988
+      ],
+      "ci_time_ms": [
+        7.840040572257935,
+        10.689208094408732
+      ],
+      "mean_nodes": 198.0,
+      "mean_path_length": 21.889209083497988,
+      "mean_time_ms": 9.264624333333334,
+      "planner": "prm",
+      "repeats": 3,
+      "std_path_length": 0.0,
+      "std_time_ms": 0.7759281301321234,
+      "success_rate": 1.0
+    }
+  ]
+}
