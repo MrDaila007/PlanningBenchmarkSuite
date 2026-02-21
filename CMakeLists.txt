@@ -23,9 +23,15 @@ add_library(planning_benchmark
   src/core/state.cpp
   src/core/path.cpp
   src/geometry/grid_collision_checker.cpp
+  src/geometry/polygon.cpp
+  src/geometry/continuous_collision_checker.cpp
   src/benchmark/benchmark_engine.cpp
+  src/benchmark/statistics.cpp
+  src/metrics/metrics_collector.cpp
   src/environment/grid_environment_stub.cpp
   src/environment/map_generator.cpp
+  src/environment/continuous_environment.cpp
+  src/environment/se2_environment.cpp
 )
 target_include_directories(planning_benchmark
   PUBLIC
@@ -37,6 +43,8 @@ target_link_libraries(planning_benchmark PUBLIC nlohmann_json::nlohmann_json)
 add_library(planners
   src/planners/dijkstra.cpp
   src/planners/astar.cpp
+  src/planners/weighted_astar.cpp
+  src/planners/thetastar.cpp
 )
 target_link_libraries(planners PUBLIC planning_benchmark)
 target_include_directories(planners PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

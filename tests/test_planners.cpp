@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "planners/dijkstra.hpp"
 #include "planners/astar.hpp"
+#include "planners/weighted_astar.hpp"
+#include "planners/thetastar.hpp"
 #include "planners/heuristic.hpp"
 #include "environment/grid_environment.hpp"
 
@@ -44,6 +46,28 @@ TEST(PlannersTest, AStarVsDijkstraExpansions) {
   EXPECT_TRUE(p1.success);
   EXPECT_TRUE(p2.success);
   EXPECT_LE(astar.nodes_expanded(), dijkstra.nodes_expanded());
+}
+
+TEST(PlannersTest, WeightedAStarFewerExpansions) {
+  pbs::GridEnvironment env(15, 15);
+  pbs::AStarPlanner astar(pbs::HeuristicType::Diagonal);
+  pbs::WeightedAStarPlanner wastar(pbs::HeuristicType::Diagonal, 2.0);
+  auto p1 = astar.solve(env, pbs::State(0, 0), pbs::State(14, 14));
+  auto p2 = wastar.solve(env, pbs::State(0, 0), pbs::State(14, 14));
+  EXPECT_TRUE(p1.success);
+  EXPECT_TRUE(p2.success);
+  EXPECT_LE(wastar.nodes_expanded(), astar.nodes_expanded());
+}
+
+TEST(PlannersTest, ThetaStarShorterPath) {
+  pbs::GridEnvironment env(20, 20);
+  pbs::AStarPlanner astar(pbs::HeuristicType::Diagonal);
+  pbs::ThetaStarPlanner thetastar(pbs::HeuristicType::Diagonal);
+  auto p1 = astar.solve(env, pbs::State(0, 0), pbs::State(19, 19));
+  auto p2 = thetastar.solve(env, pbs::State(0, 0), pbs::State(19, 19));
+  EXPECT_TRUE(p1.success);
+  EXPECT_TRUE(p2.success);
+  EXPECT_LE(p2.length, p1.length + 0.01);
 }
 
 }  // namespace

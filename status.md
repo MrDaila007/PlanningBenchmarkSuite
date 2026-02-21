@@ -16,7 +16,7 @@
 | 4. Ревью архитектуры | ✅ Выполнено | 1/2 | docs/architecture_review.md |
 | 5. Планирование | ✅ Выполнено | 1/1 | plan.md, tasks/*.md |
 | 6. Ревью плана | ✅ Выполнено | 1/1 | plan_review.md |
-| 7. Разработка | 🔄 В работе | Задачи 1.1–3.1 | 19/19 тестов |
+| 7. Разработка | 🔄 В работе | Задачи 1.1–5.3 | 28/28 тестов |
 
 ---
 
@@ -28,12 +28,13 @@
 | 1.2 Core типы | ✅ | State, Path, IPlanner, IEnvironment |
 | 2.1 Grid collision | ✅ | Bresenham, GridCollisionChecker |
 | 2.2 MapGenerator, JSON | ✅ | RandomUniform, JSON round-trip |
-| 2.3 Continuous collision | ⏳ | — |
-| 2.4 ContinuousEnv, SE2 | ⏳ | — |
+| 2.3 Continuous collision | ✅ | Polygon, segment-polygon, clearance |
+| 2.4 ContinuousEnv, SE2 | ✅ | ContinuousEnvironment, SE2Environment |
 | 3.1 Dijkstra, A* | ✅ | Min-heap, 8-connected |
-| 3.2 Weighted A*, Theta* | ⏳ | — |
+| 3.2 Weighted A*, Theta* | ✅ | w*A*, any-angle Theta* |
 | 4.1–4.3 PRM, RRT, RRT* | ⏳ | — |
-| 5.1–5.3 Metrics, Benchmark | ⏳ | — |
+| 5.1 Metrics | ✅ | MetricsCollector |
+| 5.2–5.3 Benchmark, CLI | ✅ | Batch run, JSON export |
 | 6.1–8.1 Python, CI, Docs | ⏳ | — |
 
 ---

@@ -4,6 +4,8 @@ add_executable(test_structure
   test_grid_collision.cpp
   test_map_generator.cpp
   test_planners.cpp
+  test_continuous.cpp
+  test_benchmark.cpp
 )
 target_link_libraries(test_structure PRIVATE planning_benchmark planners
   GTest::gtest_main)
