@@ -18,6 +18,16 @@
 
 ---
 
+## Autonomous Web (fully standalone, no backend)
+
+| Этап | Статус | Результат |
+|------|--------|-----------|
+| 1. План / ТЗ (Аналитик) | ✅ | docs/autonomous_web_plan.md |
+| 2. Ревью плана | ✅ | docs/autonomous_web_plan_review.md |
+| 3. Реализация Phase 1 (MVP) | ✅ | map-generator, grid-environment, dijkstra, astar, UI |
+
+---
+
 ## Этапы процесса
 
 | Этап | Статус | Итерация | Результат |
@@ -28,7 +38,7 @@
 | 4. Ревью архитектуры | ✅ Выполнено | 1/2 | docs/architecture_review.md |
 | 5. Планирование | ✅ Выполнено | 1/1 | plan.md, tasks/*.md |
 | 6. Ревью плана | ✅ Выполнено | 1/1 | plan_review.md |
-| 7. Разработка | 🔄 В работе | Задачи 1.1–8.1 | 38/38 тестов |
+| 7. Разработка | 🔄 В работе | Задачи 1.1–8.1 + Kruskal maze | 41/41 тестов |
 
 ---
 
@@ -39,7 +49,7 @@
 | 1.1 Структура проекта | ✅ | CMake, заглушки |
 | 1.2 Core типы | ✅ | State, Path, IPlanner, IEnvironment |
 | 2.1 Grid collision | ✅ | Bresenham, GridCollisionChecker |
-| 2.2 MapGenerator, JSON | ✅ | RandomUniform, JSON round-trip |
+| 2.2 MapGenerator, JSON | ✅ | RandomUniform, Maze (Kruskal), JSON round-trip |
 | 2.3 Continuous collision | ✅ | Polygon, segment-polygon, clearance |
 | 2.4 ContinuousEnv, SE2 | ✅ | ContinuousEnvironment, SE2Environment |
 | 3.1 Dijkstra, A* | ✅ | Min-heap, 8-connected |
@@ -74,3 +84,8 @@
 | Web UI (MVP) | web/index.html, js/, css/ | ✅ |
 | Export script | examples/export_visualization_data.py | ✅ |
 | Python to_json, MapGenerator | src/bindings/python_bindings.cpp | ✅ |
+| Autonomous Web Plan | docs/autonomous_web_plan.md | ✅ |
+| Autonomous Web Plan Review | docs/autonomous_web_plan_review.md | ✅ |
+| MapGenerator (JS) | web/js/map-generator.js | ✅ |
+| GridEnvironment (JS) | web/js/grid-environment.js | ✅ |
+| Dijkstra/A* (JS) | web/js/planners/ | ✅ |

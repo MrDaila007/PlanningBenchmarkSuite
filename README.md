@@ -36,9 +36,14 @@ Results: `simple_grid_results.json`, `simple_grid_results.csv`
 - **Grid:** dijkstra, astar, weighted_astar, thetastar
 - **Sampling:** prm, lazy_prm, rrt, rrt_star, informed_rrt_star
 
+### Map generators
+- **random_uniform** — random obstacle placement
+- **maze** — Kruskal's perfect maze (deterministic, reproducible with seed)
+
 ### Example config (experiments/configs/)
 - `simple_grid.json` — 20×20 A*, 5 repeats
 - `benchmark_suite.json` — multiple planners
+- `maze.json` — Kruskal maze (4×4 and 10×10 cells), A*
 
 ## Project structure
 
@@ -49,19 +54,20 @@ Results: `simple_grid_results.json`, `simple_grid_results.csv`
 | apps/benchmark/ | CLI executable |
 | tests/ | Unit and integration tests |
 | experiments/configs/ | JSON configs |
+| examples/viz/ | Sample visualization data (JSON) |
 | web/ | Visualization UI (static HTML/JS) |
 | docker/ | Dockerfile |
 | docs/ | Specification, architecture, REPLICATION |
 
 ## Web visualization
 
-Open `web/index.html` in a browser (or serve via `python -m http.server`). Drag-and-drop:
+Serve and open (e.g. `python3 -m http.server 8765`, then http://localhost:8765/web/). Left sidebar: dropdown with built-in examples; drop zone for custom JSON/CSV. Drag-and-drop:
 - `*_results.json` / `*_results.csv` — benchmark metrics charts
 - `viz_data.json` — map, path, convergence (use `examples/export_visualization_data.py` to generate)
 
 ```bash
 # Generate viz_data.json (requires pybind11)
-PYTHONPATH=build python examples/export_visualization_data.py --config experiments/configs/simple_grid.json --out viz_data.json
+PYTHONPATH=build python3 examples/export_visualization_data.py --config experiments/configs/simple_grid.json --out viz_data.json
 ```
 
 ## Python bindings (optional)

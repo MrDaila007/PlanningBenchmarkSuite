@@ -1,0 +1,2 @@
+planner,mean_path_length,std_path_length,mean_time_ms,std_time_ms,mean_nodes,success_rate,ci_low,ci_high
+"astar",27.455844122715725,3.972054645195637e-15,0.374761,0.05268669166876964,45.0,1.0,0.31420613362239647,0.43531586637760356

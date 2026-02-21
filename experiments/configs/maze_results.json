@@ -1,0 +1,40 @@
+{
+  "results": [
+    {
+      "ci_path_length": [
+        9.65685424949238,
+        9.65685424949238
+      ],
+      "ci_time_ms": [
+        0.2915361031949655,
+        0.48014429680503456
+      ],
+      "mean_nodes": 13.0,
+      "mean_path_length": 9.65685424949238,
+      "mean_time_ms": 0.3858402,
+      "planner": "astar",
+      "repeats": 5,
+      "std_path_length": 0.0,
+      "std_time_ms": 0.08205072802053616,
+      "success_rate": 1.0
+    },
+    {
+      "ci_path_length": [
+        36.38477631085024,
+        36.38477631085024
+      ],
+      "ci_time_ms": [
+        2.815643775241873,
+        2.901763424758128
+      ],
+      "mean_nodes": 92.0,
+      "mean_path_length": 36.38477631085024,
+      "mean_time_ms": 2.8587036000000006,
+      "planner": "astar",
+      "repeats": 5,
+      "std_path_length": 0.0,
+      "std_time_ms": 0.03746486196824959,
+      "success_rate": 1.0
+    }
+  ]
+}

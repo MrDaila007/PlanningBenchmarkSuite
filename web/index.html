@@ -7,69 +7,277 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <h1>Planning Benchmark Suite — Web Visualization</h1>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Examples</h2>
+      <select id="file-select" aria-label="Select visualization file">
+        <option value="">— Select file —</option>
+      </select>
 
-  <div class="drop-zone" id="drop-zone">
-    <p>Drop JSON or CSV here, or click to select</p>
-    <p style="font-size:0.8em">Supports: *_results.json, *_results.csv, viz_data.json</p>
-  </div>
-  <input type="file" id="file-input" accept=".json,.csv" style="display:none">
+      <h2 style="margin-top:0.5rem">Or load custom</h2>
+      <div class="drop-zone" id="drop-zone" tabindex="0">
+        <p>Drop or click</p>
+        <p style="font-size:0.7em">Paste (Ctrl+V)</p>
+        <p id="status-msg" style="font-size:0.7em;margin-top:0.25rem;color:#94a3b8;"></p>
+      </div>
+      <input type="file" id="file-input" accept=".json,.csv" style="display:none">
 
-  <div id="viz-panel" class="hidden">
-    <div class="section">
-      <h2>Map & path</h2>
-      <div id="map-container">
-        <canvas id="map-canvas"></canvas>
+      <h2 style="margin-top:0.5rem">Or generate</h2>
+      <div class="generate-panel">
+        <label>W: <input type="number" id="gen-width" value="20" min="5" max="100" class="gen-input"></label>
+        <label>H: <input type="number" id="gen-height" value="20" min="5" max="100" class="gen-input"></label>
+        <label>Type: <select id="gen-type"><option value="random_uniform">Random</option><option value="maze">Maze</option></select></label>
+        <label>Seed: <input type="number" id="gen-seed" value="42" class="gen-input"></label>
+        <label id="gen-density-label">Density: <input type="number" id="gen-density" value="0.1" min="0" max="1" step="0.05" class="gen-input"></label>
+        <button type="button" id="btn-generate" class="sidebar-btn">Generate</button>
       </div>
-      <div id="map-info" class="info-row"></div>
-    </div>
 
-    <div class="section">
-      <h2>Metrics</h2>
-      <div class="chart-container">
-        <canvas id="metrics-chart"></canvas>
+      <h2 style="margin-top:0.5rem">Solve</h2>
+      <div class="solve-panel">
+        <label>Planner: <select id="planner-select"><option value="dijkstra">Dijkstra</option><option value="astar">A*</option></select></label>
+        <button type="button" id="btn-solve" class="sidebar-btn">Solve</button>
       </div>
-      <div class="chart-container" id="time-chart-container">
-        <canvas id="time-chart"></canvas>
-      </div>
-    </div>
+    </aside>
 
-    <div class="section" id="convergence-section">
-      <h2>Convergence (RRT*)</h2>
-      <div class="chart-container">
-        <canvas id="convergence-chart"></canvas>
+    <main class="main-content">
+      <h1>Planning Benchmark Suite — Web Visualization</h1>
+
+      <div id="viz-panel" class="hidden">
+        <div class="section">
+          <h2>Map & path</h2>
+          <div id="map-container">
+            <canvas id="map-canvas"></canvas>
+          </div>
+          <div id="map-info" class="info-row"></div>
+        </div>
+
+        <div class="section">
+          <h2>Metrics</h2>
+          <div class="chart-container">
+            <canvas id="metrics-chart"></canvas>
+          </div>
+          <div class="chart-container" id="time-chart-container">
+            <canvas id="time-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="section" id="convergence-section">
+          <h2>Convergence (RRT*)</h2>
+          <div class="chart-container">
+            <canvas id="convergence-chart"></canvas>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div id="welcome-msg" style="color:#64748b;font-size:0.9rem;margin-top:1rem;">
+        Select a file from the dropdown or drop your own JSON/CSV.
+      </div>
+    </main>
   </div>
 
   <script src="js/parser.js"></script>
-  <script src="js/map-renderer.js"></script>
+  <script src="js/map-generator.js"></script>
+  <script src="js/grid-environment.js"></script>
+  <script src="js/planners/dijkstra.js"></script>
+  <script src="js/planners/astar.js"></script>
+  <script>
+    // MapRenderer - inlined to avoid load-order issues (was: map-renderer.js)
+    window.MapRenderer = {
+      render(canvas, options = {}) {
+        const { environment, path, start, goal } = options;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (!environment || !environment.occupancy) return;
+        const w = environment.width, h = environment.height, occ = environment.occupancy;
+        const rect = canvas.getBoundingClientRect();
+        const scale = Math.min(rect.width / w, rect.height / h, 32);
+        const offX = (rect.width - w * scale) / 2, offY = (rect.height - h * scale) / 2;
+        ctx.save();
+        ctx.translate(offX, offY);
+        ctx.scale(scale, scale);
+        for (let r = 0; r < h; r++)
+          for (let c = 0; c < w; c++) {
+            ctx.fillStyle = (occ[r] && occ[r][c]) ? '#2c3e50' : '#ecf0f1';
+            ctx.fillRect(c, r, 1, 1);
+          }
+        if (path && path.states && path.states.length > 1) {
+          ctx.strokeStyle = '#3498db';
+          ctx.lineWidth = 0.25;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(path.states[0].x, path.states[0].y);
+          for (let i = 1; i < path.states.length; i++) ctx.lineTo(path.states[i].x, path.states[i].y);
+          ctx.stroke();
+        }
+        if (start) { ctx.fillStyle = '#27ae60'; ctx.beginPath(); ctx.arc(start[0], start[1], 0.4, 0, Math.PI * 2); ctx.fill(); }
+        if (goal) { ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(goal[0], goal[1], 0.4, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+      },
+      setupCanvas(canvas, options) {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+          canvas.width = rect.width * dpr;
+          canvas.height = rect.height * dpr;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(dpr, dpr);
+        }
+        this.render(canvas, options);
+      }
+    };
+  </script>
   <script src="js/charts.js"></script>
   <script>
+    const fileSelect = document.getElementById('file-select');
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const vizPanel = document.getElementById('viz-panel');
+    const welcomeMsg = document.getElementById('welcome-msg');
     const mapCanvas = document.getElementById('map-canvas');
     const mapInfo = document.getElementById('map-info');
     const convergenceSection = document.getElementById('convergence-section');
+    const statusMsg = document.getElementById('status-msg');
+    const genTypeSelect = document.getElementById('gen-type');
+    const genDensityLabel = document.getElementById('gen-density-label');
+
+    let fileList = [];
+    let autonomousState = { environment: null, start: null, goal: null };
+
+    const PLANNERS = {
+      dijkstra: DijkstraPlanner,
+      astar: AStarPlanner
+    };
+
+    function setAutonomousViz(env, start, goal, path, planner, timeMs, nodes) {
+      autonomousState = { environment: env, start, goal };
+      window._lastViz = {
+        environment: env,
+        path: path || null,
+        start,
+        goal
+      };
+      MapRenderer.setupCanvas(mapCanvas, window._lastViz);
+      mapInfo.innerHTML = path
+        ? `<strong>Planner:</strong> ${planner} &bull; <strong>Path:</strong> ${path.success ? path.length.toFixed(2) : '—'} &bull; <strong>Time:</strong> ${timeMs} ms &bull; <strong>Nodes:</strong> ${nodes ?? '—'}`
+        : 'Map ready. Select planner and click Solve.';
+      Charts.destroyAll();
+      if (path && path.success) {
+        Charts.metricsBar('metrics-chart', [{
+          planner,
+          mean_path_length: path.length,
+          mean_time_ms: timeMs,
+          mean_nodes: nodes
+        }], 'mean_path_length');
+      }
+      document.getElementById('time-chart-container').classList.add('hidden');
+      convergenceSection.classList.add('hidden');
+    }
+
+    genTypeSelect.addEventListener('change', () => {
+      genDensityLabel.style.display = genTypeSelect.value === 'random_uniform' ? '' : 'none';
+    });
+    genDensityLabel.style.display = genTypeSelect.value === 'random_uniform' ? '' : 'none';
+
+    document.getElementById('btn-generate').addEventListener('click', () => {
+      const w = parseInt(document.getElementById('gen-width').value, 10) || 20;
+      const h = parseInt(document.getElementById('gen-height').value, 10) || 20;
+      const type = document.getElementById('gen-type').value;
+      const seed = parseInt(document.getElementById('gen-seed').value, 10) || 42;
+      const density = parseFloat(document.getElementById('gen-density').value) || 0.1;
+      let env;
+      let start, goal;
+      if (type === 'maze') {
+        env = MapGenerator.maze(w, h, seed);
+        start = [1, 1];
+        goal = [env.width - 2, env.height - 2];
+      } else {
+        env = MapGenerator.randomUniform(w, h, density, seed);
+        start = [0, 0];
+        goal = [w - 1, h - 1];
+      }
+      welcomeMsg.style.display = 'none';
+      vizPanel.classList.remove('hidden');
+      setAutonomousViz(env, start, goal, null, null, null, null);
+      setStatus('Generated: ' + type);
+    });
+
+    document.getElementById('btn-solve').addEventListener('click', () => {
+      if (!autonomousState.environment) {
+        setStatus('Generate or load a map first', true);
+        return;
+      }
+      const plannerName = document.getElementById('planner-select').value;
+      const planner = PLANNERS[plannerName];
+      if (!planner) {
+        setStatus('Unknown planner', true);
+        return;
+      }
+      const start = { x: autonomousState.start[0], y: autonomousState.start[1] };
+      const goal = { x: autonomousState.goal[0], y: autonomousState.goal[1] };
+      setStatus('Solving...');
+      const t0 = performance.now();
+      const result = planner.solve(autonomousState.environment, start, goal);
+      const t1 = performance.now();
+      const timeMs = Math.round((t1 - t0) * 100) / 100;
+      setAutonomousViz(
+        autonomousState.environment,
+        autonomousState.start,
+        autonomousState.goal,
+        result.path,
+        plannerName,
+        timeMs,
+        result.nodes_expanded
+      );
+      setStatus(result.path.success ? 'Solved' : 'No path found', !result.path.success);
+    });
+
+    function setStatus(msg, isError) {
+      statusMsg.textContent = msg;
+      statusMsg.style.color = isError ? '#e74c3c' : '#94a3b8';
+    }
+
+    function processText(text, filename) {
+      const parsed = Parser.parse(text, filename || '');
+      if (parsed.error) { setStatus('Parse error: ' + parsed.error, true); return; }
+      if (parsed.format === 'unknown') { setStatus('Unknown format', true); return; }
+      welcomeMsg.style.display = 'none';
+      vizPanel.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        try {
+          render(parsed.format, parsed.data);
+          setStatus('Loaded: ' + (parsed.format === 'visualization' ? 'map + path' : 'benchmark'));
+        } catch (err) {
+          setStatus('Error: ' + err.message, true);
+          console.error(err);
+        }
+      });
+    }
 
     function handleFile(file) {
       if (!file || (!file.name.endsWith('.json') && !file.name.endsWith('.csv'))) return;
+      setStatus('Loading...');
       const r = new FileReader();
-      r.onload = () => {
-        const parsed = Parser.parse(r.result, file.name);
-        if (parsed.error) { alert('Parse error: ' + parsed.error); return; }
-        if (parsed.format === 'unknown') { alert('Unknown format'); return; }
-        render(parsed.format, parsed.data);
-        vizPanel.classList.remove('hidden');
-      };
+      r.onload = () => processText(r.result, file.name);
+      r.onerror = () => setStatus('Read failed', true);
       r.readAsText(file);
+    }
+
+    function loadFromPath(path) {
+      if (!path) return;
+      setStatus('Loading...');
+      fetch(path)
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+        .then(text => processText(text, path.split('/').pop()))
+        .catch(err => setStatus('Failed: ' + err.message, true));
     }
 
     function render(format, data) {
       Charts.destroyAll();
 
       if (format === 'visualization') {
+        autonomousState = { environment: data.environment, start: data.start, goal: data.goal };
         window._lastViz = { environment: data.environment, path: data.path, start: data.start, goal: data.goal };
         MapRenderer.setupCanvas(mapCanvas, window._lastViz);
         mapInfo.innerHTML = `<strong>Planner:</strong> ${data.planner} &bull; ` +
@@ -91,7 +299,7 @@
         }], 'mean_path_length');
         document.getElementById('time-chart-container').classList.add('hidden');
       } else if (format === 'benchmark' && data.results) {
-        mapInfo.textContent = 'Benchmark results only — no map/path. Use export_visualization_data.py for env+path.';
+        mapInfo.textContent = 'Benchmark results — no map. Use export_visualization_data.py for env+path.';
         window._lastViz = {};
         MapRenderer.setupCanvas(mapCanvas, {});
 
@@ -102,11 +310,45 @@
       }
     }
 
-    dropZone.onclick = () => fileInput.click();
+    // Load examples manifest and populate dropdown
+    fetch('../examples/index.json')
+      .then(r => r.json())
+      .then(data => {
+        fileList = data.files || [];
+        fileSelect.innerHTML = '<option value="">— Select file —</option>' +
+          fileList.map(f => `<option value="${f.path}">${f.name}</option>`).join('');
+        if (fileList.length > 0) {
+          fileSelect.value = fileList[0].path;
+          loadFromPath(fileList[0].path);
+        }
+      })
+      .catch(() => {
+        fileList = [{ name: 'Sample (built-in)', path: 'sample_viz_data.json' }];
+        fileSelect.innerHTML = '<option value="">— Select —</option><option value="sample_viz_data.json">Sample (built-in)</option>';
+        fileSelect.value = 'sample_viz_data.json';
+        loadFromPath('sample_viz_data.json');
+      });
+
+    fileSelect.onchange = () => loadFromPath(fileSelect.value);
+
+    dropZone.onclick = () => { dropZone.focus(); fileInput.click(); };
     fileInput.onchange = e => { if (e.target.files[0]) handleFile(e.target.files[0]); };
-    dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('dragover'); };
-    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
-    dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
+    dropZone.ondragover = e => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = e => { e.preventDefault(); dropZone.classList.remove('dragover'); };
+    dropZone.ondrop = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('dragover');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) handleFile(f);
+      else setStatus('No file', true);
+    };
+    dropZone.onpaste = e => {
+      e.preventDefault();
+      const text = e.clipboardData?.getData?.('text');
+      if (text) processText(text);
+      else setStatus('Nothing to paste', true);
+    };
 
     window.addEventListener('resize', () => {
       if (vizPanel.classList.contains('hidden') || !window._lastViz) return;

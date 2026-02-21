@@ -65,6 +65,22 @@ std::unique_ptr<IPlanner> create_planner(const std::string& name,
   return nullptr;
 }
 
+MapGeneratorType parse_generator_type(const std::string& s) {
+  if (s == "maze") return MapGeneratorType::Maze;
+  if (s == "random_uniform" || s == "random") return MapGeneratorType::RandomUniform;
+  return MapGeneratorType::RandomUniform;
+}
+
+MapGeneratorParams params_from_json(const nlohmann::json& env_j) {
+  int w = env_j["width"];
+  int h = env_j["height"];
+  double density = env_j.value("obstacle_density", 0.2);
+  uint64_t seed = env_j.value("seed", 42u);
+  std::string gen_s = env_j.value("generator", "random_uniform");
+  MapGeneratorType type = parse_generator_type(gen_s);
+  return MapGeneratorParams{w, h, density, 0, 0.0, seed, type};
+}
+
 int get_nodes(const IPlanner* p) {
   if (auto* d = dynamic_cast<const DijkstraPlanner*>(p))
     return d->nodes_expanded();
@@ -113,12 +129,7 @@ void BenchmarkEngine::run(const std::string& config_path) {
 
   for (const auto& exp : config["experiments"]) {
     auto env_j = exp["environment"];
-    int w = env_j["width"];
-    int h = env_j["height"];
-    double density = env_j.value("obstacle_density", 0.2);
-    uint64_t seed = env_j.value("seed", 42u);
-    MapGeneratorParams mgp{w, h, density, 0, 0.0, seed,
-                           MapGeneratorType::RandomUniform};
+    MapGeneratorParams mgp = params_from_json(env_j);
     MapGenerator gen;
     GridEnvironment env = gen.generate(mgp);
 

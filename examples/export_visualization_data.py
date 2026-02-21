@@ -3,7 +3,7 @@
 Export visualization data (environment + path + metrics) for the web UI.
 
 Usage:
-  PYTHONPATH=build python examples/export_visualization_data.py --config experiments/configs/simple_grid.json --out viz_data.json
+  PYTHONPATH=build python3 examples/export_visualization_data.py --config experiments/configs/simple_grid.json --out viz_data.json
 
 Requires: planning_benchmark (pybind11), build with: apt install pybind11-dev && cmake .. && make
 """
@@ -66,7 +66,7 @@ def main():
         import planning_benchmark as pbs
     except ImportError:
         print("Error: planning_benchmark not found. Build with pybind11: apt install pybind11-dev && cmake .. && make")
-        print("Then: PYTHONPATH=build python examples/export_visualization_data.py --config ...")
+        print("Then: PYTHONPATH=build python3 examples/export_visualization_data.py --config ...")
         sys.exit(1)
 
     with open(args.config) as f:
@@ -87,13 +87,14 @@ def main():
     h = env_j["height"]
     density = env_j.get("obstacle_density", 0.2)
     seed = env_j.get("seed", 42)
+    gen_type = env_j.get("generator", "random_uniform")
 
     params = pbs.MapGeneratorParams()
     params.width = w
     params.height = h
     params.obstacle_density = density
     params.seed = seed
-    params.type = pbs.MapGeneratorType.RandomUniform
+    params.type = pbs.MapGeneratorType.Maze if gen_type == "maze" else pbs.MapGeneratorType.RandomUniform
 
     gen = pbs.MapGenerator(seed)
     env = gen.generate(params)

@@ -3,6 +3,7 @@ project(PlanningBenchmarkSuite VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # Required for Python .so linking
 
 # Dependencies
 # Install: apt install libeigen3-dev nlohmann-json3-dev libgtest-dev cmake
@@ -60,11 +61,13 @@ add_executable(benchmark apps/benchmark/main.cpp)
 target_link_libraries(benchmark PRIVATE planning_benchmark planners nlohmann_json::nlohmann_json)
 
 # Python bindings (optional: apt install pybind11-dev)
+cmake_policy(SET CMP0148 OLD)  # Suppress FindPythonLibs deprecation warning from pybind11
 find_package(pybind11 CONFIG QUIET)
 if(pybind11_FOUND)
-  pybind11_add_module(planning_benchmark src/bindings/python_bindings.cpp)
-  target_link_libraries(planning_benchmark PRIVATE planning_benchmark planners nlohmann_json::nlohmann_json)
-  target_include_directories(planning_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  pybind11_add_module(planning_benchmark_py src/bindings/python_bindings.cpp)
+  set_target_properties(planning_benchmark_py PROPERTIES OUTPUT_NAME "planning_benchmark")
+  target_link_libraries(planning_benchmark_py PRIVATE planning_benchmark planners nlohmann_json::nlohmann_json)
+  target_include_directories(planning_benchmark_py PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   message(STATUS "Python bindings: enabled")
 else()
   message(STATUS "Python bindings: disabled (apt install pybind11-dev)")

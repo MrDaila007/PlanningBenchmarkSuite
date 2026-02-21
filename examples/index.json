@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "name": "Simple grid (A*)",
+      "path": "../examples/viz/simple_grid.json"
+    },
+    {
+      "name": "Larger grid (Theta*)",
+      "path": "../examples/viz/larger_grid.json"
+    },
+    {
+      "name": "Benchmark suite (multi-planner)",
+      "path": "../examples/viz/benchmark_suite.json"
+    },
+    {
+      "name": "Simple grid results (from config)",
+      "path": "../experiments/configs/simple_grid_results.json"
+    },
+    {
+      "name": "Benchmark suite results (from config)",
+      "path": "../experiments/configs/benchmark_suite_results.json"
+    }
+  ]
+}

@@ -41,7 +41,9 @@ PYBIND11_MODULE(planning_benchmark, m) {
     .def_readwrite("length", &pbs::Path::length)
     .def("empty", &pbs::Path::empty);
 
-  py::class_<pbs::GridEnvironment>(m, "GridEnvironment")
+  py::class_<pbs::IEnvironment>(m, "IEnvironment");
+
+  py::class_<pbs::GridEnvironment, pbs::IEnvironment>(m, "GridEnvironment")
     .def(py::init<int, int>())
     .def("width", &pbs::GridEnvironment::width)
     .def("height", &pbs::GridEnvironment::height)
@@ -50,14 +52,15 @@ PYBIND11_MODULE(planning_benchmark, m) {
       return pbs::GridEnvironment::from_json(s);
     });
 
-  py::class_<pbs::ContinuousEnvironment>(m, "ContinuousEnvironment")
+  py::class_<pbs::ContinuousEnvironment, pbs::IEnvironment>(m, "ContinuousEnvironment")
     .def(py::init<double, double, double, double, std::vector<pbs::Polygon>>())
     .def_static("from_json", [](const std::string& s) {
       return pbs::ContinuousEnvironment::from_json(s);
     });
 
   py::enum_<pbs::MapGeneratorType>(m, "MapGeneratorType")
-    .value("RandomUniform", pbs::MapGeneratorType::RandomUniform);
+    .value("RandomUniform", pbs::MapGeneratorType::RandomUniform)
+    .value("Maze", pbs::MapGeneratorType::Maze);
 
   py::class_<pbs::MapGeneratorParams>(m, "MapGeneratorParams")
     .def(py::init<>())
@@ -71,6 +74,14 @@ PYBIND11_MODULE(planning_benchmark, m) {
     .def(py::init<>())
     .def(py::init<uint64_t>(), py::arg("seed"))
     .def("generate", &pbs::MapGenerator::generate);
+
+  py::enum_<pbs::HeuristicType>(m, "HeuristicType")
+    .value("Manhattan", pbs::HeuristicType::Manhattan)
+    .value("Euclidean", pbs::HeuristicType::Euclidean)
+    .value("Diagonal", pbs::HeuristicType::Diagonal);
+
+  // Base class must be registered before derived classes
+  py::class_<pbs::IPlanner>(m, "IPlanner");
 
   py::class_<pbs::DijkstraPlanner, pbs::IPlanner>(m, "DijkstraPlanner")
     .def(py::init<>())
@@ -138,11 +149,6 @@ PYBIND11_MODULE(planning_benchmark, m) {
 
   py::class_<pbs::Polygon>(m, "Polygon")
     .def(py::init<std::vector<pbs::Point2D>>());
-
-  py::enum_<pbs::HeuristicType>(m, "HeuristicType")
-    .value("Manhattan", pbs::HeuristicType::Manhattan)
-    .value("Euclidean", pbs::HeuristicType::Euclidean)
-    .value("Diagonal", pbs::HeuristicType::Diagonal);
 
   m.def("run_benchmark", [](const std::string& config_path) {
     pbs::BenchmarkEngine engine;

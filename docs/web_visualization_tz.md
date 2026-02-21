@@ -230,7 +230,7 @@
    ./benchmark --config X.json  →  X_results.json, X_results.csv
 
 2. (Опционально) Python export для path + env:
-   python examples/export_visualization_data.py --config X.json --out viz_data.json
+   python3 examples/export_visualization_data.py --config X.json --out viz_data.json
    → viz_data.json содержит: environment, path, start, goal, planner, metrics
 
 3. Web UI:

@@ -4,7 +4,7 @@ Example: plot Informed RRT* convergence curve.
 Requires: planning_benchmark (pybind11), matplotlib
   pip install matplotlib
   Build with: apt install pybind11-dev && cmake .. && make
-  PYTHONPATH=build python examples/visualize_convergence.py
+  PYTHONPATH=build python3 examples/visualize_convergence.py
 """
 
 try:

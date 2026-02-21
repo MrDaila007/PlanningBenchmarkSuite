@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "planner": "astar",
+      "mean_path_length": 27.46,
+      "mean_time_ms": 0.37,
+      "mean_nodes": 45,
+      "success_rate": 1.0
+    },
+    {
+      "planner": "dijkstra",
+      "mean_path_length": 27.46,
+      "mean_time_ms": 4.22,
+      "mean_nodes": 388,
+      "success_rate": 1.0
+    },
+    {
+      "planner": "thetastar",
+      "mean_path_length": 26.93,
+      "mean_time_ms": 0.30,
+      "mean_nodes": 21,
+      "success_rate": 1.0
+    },
+    {
+      "planner": "prm",
+      "mean_path_length": 21.89,
+      "mean_time_ms": 9.26,
+      "mean_nodes": 198,
+      "success_rate": 1.0
+    }
+  ]
+}

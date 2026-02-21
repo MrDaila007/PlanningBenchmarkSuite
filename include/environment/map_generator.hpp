@@ -36,6 +36,8 @@ class MapGenerator {
   GridEnvironment generate_random_uniform(int width, int height,
                                          double obstacle_density,
                                          std::mt19937& rng);
+  GridEnvironment generate_maze(int cells_wide, int cells_high,
+                               std::mt19937& rng);
 };
 
 }  // namespace pbs

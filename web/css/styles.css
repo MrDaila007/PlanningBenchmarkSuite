@@ -1,17 +1,32 @@
 * { box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 1rem; background: #1a1a2e; color: #eaeaea; }
-h1 { font-size: 1.25rem; margin: 0 0 1rem; }
+body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background: #1a1a2e; color: #eaeaea; }
+
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 240px; flex-shrink: 0; padding: 1rem; border-right: 1px solid #2d3748;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.sidebar h2 { font-size: 0.9rem; margin: 0 0 0.5rem; color: #94a3b8; }
+.sidebar select {
+  width: 100%; padding: 0.5rem; font-size: 0.85rem; background: #0f0f1a;
+  color: #eaeaea; border: 1px solid #4a5568; border-radius: 4px; cursor: pointer;
+}
+.sidebar select:hover, .sidebar select:focus { border-color: #3498db; outline: none; }
+.main-content { flex: 1; padding: 1rem; overflow: auto; }
+.main-content h1 { font-size: 1.25rem; margin: 0 0 1rem; }
+
 .drop-zone {
   border: 2px dashed #4a5568;
   border-radius: 8px;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
-  margin-bottom: 1rem;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
 .drop-zone:hover, .drop-zone.dragover { border-color: #3498db; background: rgba(52,152,219,0.05); }
-.drop-zone p { margin: 0; color: #9ca3af; }
+.drop-zone p { margin: 0; font-size: 0.8rem; color: #9ca3af; }
+.sidebar .drop-zone { padding: 0.75rem; }
+.sidebar .drop-zone p { font-size: 0.75rem; }
 .section { margin-bottom: 1.5rem; }
 .section h2 { font-size: 1rem; margin: 0 0 0.5rem; color: #94a3b8; }
 #map-container {
@@ -30,3 +45,37 @@ h1 { font-size: 1.25rem; margin: 0 0 1rem; }
 .info-row { font-size: 0.875rem; margin: 0.25rem 0; }
 .info-row strong { color: #94a3b8; }
 .hidden { display: none !important; }
+
+.generate-panel, .solve-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.generate-panel label, .solve-panel label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.generate-panel input, .solve-panel input, .generate-panel select, .solve-panel select {
+  width: 4rem;
+  padding: 0.3rem;
+  font-size: 0.8rem;
+  background: #0f0f1a;
+  color: #eaeaea;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+}
+.sidebar-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.sidebar-btn:hover { background: #2980b9; }
