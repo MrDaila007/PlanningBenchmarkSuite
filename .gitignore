@@ -1,0 +1,104 @@
+# Planning Benchmark Suite - .gitignore
+# C++ / CMake research-grade motion planning framework
+
+# ===== Build system (CMake) =====
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake.user
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+_deps/
+
+# ===== C++ compiled output =====
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+a.out
+*.out
+.ninja_deps
+.ninja_log
+
+# ===== Package managers =====
+# vcpkg
+vcpkg_installed/
+vcpkg-buildtrees/
+
+# Conan
+conaninfo.txt
+conanbuildinfo.*
+conan.lock
+.conan/
+
+# ===== Python (pybind11 API, analysis scripts) =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg
+
+# ===== Benchmark & experiment outputs =====
+# Raw results (reproducible from configs)
+results/
+experiments/results/
+experiments/output/
+benchmark_output/
+
+# Keep configs, ignore generated data
+# experiments/configs/ - keep (contains .gitkeep)
+
+# ===== Documentation (Doxygen) =====
+docs/html/
+docs/latex/
+docs/xml/
+
+# ===== Code coverage & profiling =====
+coverage/
+*.gcda
+*.gcno
+*.gcov
+lcov.info
+*.profdata
+*.profraw
+
+# ===== IDE / Editor =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cache/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Docker =====
+.env
+.env.local
+docker-compose.override.yml
+*.log
+
+# ===== Backup / temp =====
+*.bak
+*.tmp
+*.temp
+*.orig
