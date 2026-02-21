@@ -49,8 +49,20 @@ Results: `simple_grid_results.json`, `simple_grid_results.csv`
 | apps/benchmark/ | CLI executable |
 | tests/ | Unit and integration tests |
 | experiments/configs/ | JSON configs |
+| web/ | Visualization UI (static HTML/JS) |
 | docker/ | Dockerfile |
 | docs/ | Specification, architecture, REPLICATION |
+
+## Web visualization
+
+Open `web/index.html` in a browser (or serve via `python -m http.server`). Drag-and-drop:
+- `*_results.json` / `*_results.csv` — benchmark metrics charts
+- `viz_data.json` — map, path, convergence (use `examples/export_visualization_data.py` to generate)
+
+```bash
+# Generate viz_data.json (requires pybind11)
+PYTHONPATH=build python examples/export_visualization_data.py --config experiments/configs/simple_grid.json --out viz_data.json
+```
 
 ## Python bindings (optional)
 
@@ -75,6 +87,7 @@ docker run pbs --config /workspace/experiments/configs/simple_grid.json
 - [Architecture Diagram](docs/architecture_diagram.md)
 - [Replication Guide](docs/REPLICATION.md)
 - [Development Plan](plan.md)
+- [Web Visualization TZ](docs/web_visualization_tz.md) — техническое задание на веб-компонент визуализации
 
 ## License
 

@@ -6,6 +6,18 @@
 
 ---
 
+## Web-визуализация (отдельный workflow)
+
+| Этап | Статус | Результат |
+|------|--------|------------|
+| 1. ТЗ (Аналитик) | ✅ | docs/web_visualization_tz.md |
+| 2. Ревью ТЗ | ✅ | docs/web_visualization_tz_review.md |
+| 3. Доработка ТЗ | ✅ | ТЗ обновлён по замечаниям |
+| 4. Реализация MVP | ✅ | web/, export_visualization_data.py, Python bindings |
+| 5. Ревью кода | ✅ | docs/web_visualization_impl_review.md |
+
+---
+
 ## Этапы процесса
 
 | Этап | Статус | Итерация | Результат |
@@ -57,3 +69,8 @@
 | Ревью плана | plan_review.md | ✅ Утверждён |
 | CI | .github/workflows/ci.yml | ✅ |
 | Docker | docker/Dockerfile | ✅ |
+| ТЗ Web-визуализация | docs/web_visualization_tz.md | ✅ Готово |
+| Ревью ТЗ Web-визуализация | docs/web_visualization_tz_review.md | ✅ Утверждено |
+| Web UI (MVP) | web/index.html, js/, css/ | ✅ |
+| Export script | examples/export_visualization_data.py | ✅ |
+| Python to_json, MapGenerator | src/bindings/python_bindings.cpp | ✅ |

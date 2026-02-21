@@ -45,6 +45,7 @@ PYBIND11_MODULE(planning_benchmark, m) {
     .def(py::init<int, int>())
     .def("width", &pbs::GridEnvironment::width)
     .def("height", &pbs::GridEnvironment::height)
+    .def("to_json", &pbs::GridEnvironment::to_json)
     .def_static("from_json", [](const std::string& s) {
       return pbs::GridEnvironment::from_json(s);
     });
@@ -54,6 +55,22 @@ PYBIND11_MODULE(planning_benchmark, m) {
     .def_static("from_json", [](const std::string& s) {
       return pbs::ContinuousEnvironment::from_json(s);
     });
+
+  py::enum_<pbs::MapGeneratorType>(m, "MapGeneratorType")
+    .value("RandomUniform", pbs::MapGeneratorType::RandomUniform);
+
+  py::class_<pbs::MapGeneratorParams>(m, "MapGeneratorParams")
+    .def(py::init<>())
+    .def_readwrite("width", &pbs::MapGeneratorParams::width)
+    .def_readwrite("height", &pbs::MapGeneratorParams::height)
+    .def_readwrite("obstacle_density", &pbs::MapGeneratorParams::obstacle_density)
+    .def_readwrite("seed", &pbs::MapGeneratorParams::seed)
+    .def_readwrite("type", &pbs::MapGeneratorParams::type);
+
+  py::class_<pbs::MapGenerator>(m, "MapGenerator")
+    .def(py::init<>())
+    .def(py::init<uint64_t>(), py::arg("seed"))
+    .def("generate", &pbs::MapGenerator::generate);
 
   py::class_<pbs::DijkstraPlanner, pbs::IPlanner>(m, "DijkstraPlanner")
     .def(py::init<>())

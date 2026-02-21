@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Planning Benchmark Suite — Visualization</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <h1>Planning Benchmark Suite — Web Visualization</h1>
+
+  <div class="drop-zone" id="drop-zone">
+    <p>Drop JSON or CSV here, or click to select</p>
+    <p style="font-size:0.8em">Supports: *_results.json, *_results.csv, viz_data.json</p>
+  </div>
+  <input type="file" id="file-input" accept=".json,.csv" style="display:none">
+
+  <div id="viz-panel" class="hidden">
+    <div class="section">
+      <h2>Map & path</h2>
+      <div id="map-container">
+        <canvas id="map-canvas"></canvas>
+      </div>
+      <div id="map-info" class="info-row"></div>
+    </div>
+
+    <div class="section">
+      <h2>Metrics</h2>
+      <div class="chart-container">
+        <canvas id="metrics-chart"></canvas>
+      </div>
+      <div class="chart-container" id="time-chart-container">
+        <canvas id="time-chart"></canvas>
+      </div>
+    </div>
+
+    <div class="section" id="convergence-section">
+      <h2>Convergence (RRT*)</h2>
+      <div class="chart-container">
+        <canvas id="convergence-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/parser.js"></script>
+  <script src="js/map-renderer.js"></script>
+  <script src="js/charts.js"></script>
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const vizPanel = document.getElementById('viz-panel');
+    const mapCanvas = document.getElementById('map-canvas');
+    const mapInfo = document.getElementById('map-info');
+    const convergenceSection = document.getElementById('convergence-section');
+
+    function handleFile(file) {
+      if (!file || (!file.name.endsWith('.json') && !file.name.endsWith('.csv'))) return;
+      const r = new FileReader();
+      r.onload = () => {
+        const parsed = Parser.parse(r.result, file.name);
+        if (parsed.error) { alert('Parse error: ' + parsed.error); return; }
+        if (parsed.format === 'unknown') { alert('Unknown format'); return; }
+        render(parsed.format, parsed.data);
+        vizPanel.classList.remove('hidden');
+      };
+      r.readAsText(file);
+    }
+
+    function render(format, data) {
+      Charts.destroyAll();
+
+      if (format === 'visualization') {
+        window._lastViz = { environment: data.environment, path: data.path, start: data.start, goal: data.goal };
+        MapRenderer.setupCanvas(mapCanvas, window._lastViz);
+        mapInfo.innerHTML = `<strong>Planner:</strong> ${data.planner} &bull; ` +
+          `<strong>Path:</strong> ${data.path?.success ? data.path.length?.toFixed(2) : '—'} &bull; ` +
+          `<strong>Time:</strong> ${data.time_ms} ms &bull; <strong>Nodes:</strong> ${data.nodes_expanded ?? '—'}`;
+
+        if (data.convergence && data.convergence.length) {
+          convergenceSection.classList.remove('hidden');
+          Charts.convergence('convergence-chart', data.convergence);
+        } else {
+          convergenceSection.classList.add('hidden');
+        }
+
+        Charts.metricsBar('metrics-chart', [{
+          planner: data.planner,
+          mean_path_length: data.path?.length,
+          mean_time_ms: data.time_ms,
+          mean_nodes: data.nodes_expanded,
+        }], 'mean_path_length');
+        document.getElementById('time-chart-container').classList.add('hidden');
+      } else if (format === 'benchmark' && data.results) {
+        mapInfo.textContent = 'Benchmark results only — no map/path. Use export_visualization_data.py for env+path.';
+        window._lastViz = {};
+        MapRenderer.setupCanvas(mapCanvas, {});
+
+        Charts.metricsBar('metrics-chart', data.results, 'mean_path_length');
+        Charts.metricsBar('time-chart', data.results, 'mean_time_ms');
+        document.getElementById('time-chart-container').classList.remove('hidden');
+        convergenceSection.classList.add('hidden');
+      }
+    }
+
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = e => { if (e.target.files[0]) handleFile(e.target.files[0]); };
+    dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
+
+    window.addEventListener('resize', () => {
+      if (vizPanel.classList.contains('hidden') || !window._lastViz) return;
+      MapRenderer.setupCanvas(mapCanvas, window._lastViz);
+    });
+  </script>
+</body>
+</html>
