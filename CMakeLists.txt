@@ -23,6 +23,7 @@ add_library(planning_benchmark
   src/core/state.cpp
   src/core/path.cpp
   src/geometry/grid_collision_checker.cpp
+  src/geometry/kdtree2d.cpp
   src/geometry/polygon.cpp
   src/geometry/continuous_collision_checker.cpp
   src/benchmark/benchmark_engine.cpp
@@ -45,6 +46,11 @@ add_library(planners
   src/planners/astar.cpp
   src/planners/weighted_astar.cpp
   src/planners/thetastar.cpp
+  src/planners/prm.cpp
+  src/planners/lazy_prm.cpp
+  src/planners/rrt.cpp
+  src/planners/rrt_star.cpp
+  src/planners/informed_rrt_star.cpp
 )
 target_link_libraries(planners PUBLIC planning_benchmark)
 target_include_directories(planners PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -52,6 +58,17 @@ target_include_directories(planners PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Benchmark CLI
 add_executable(benchmark apps/benchmark/main.cpp)
 target_link_libraries(benchmark PRIVATE planning_benchmark planners nlohmann_json::nlohmann_json)
+
+# Python bindings (optional: apt install pybind11-dev)
+find_package(pybind11 CONFIG QUIET)
+if(pybind11_FOUND)
+  pybind11_add_module(planning_benchmark src/bindings/python_bindings.cpp)
+  target_link_libraries(planning_benchmark PRIVATE planning_benchmark planners nlohmann_json::nlohmann_json)
+  target_include_directories(planning_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  message(STATUS "Python bindings: enabled")
+else()
+  message(STATUS "Python bindings: disabled (apt install pybind11-dev)")
+endif()
 
 # Tests
 enable_testing()

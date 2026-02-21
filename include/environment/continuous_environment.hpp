@@ -17,6 +17,7 @@ class ContinuousEnvironment : public IEnvironment {
   bool collision_free(const State& a, const State& b) const override;
   double clearance(const State& s) const override;
   static ContinuousEnvironment from_json(const std::string& json);
+  bool get_bounds(double& x_min, double& x_max, double& y_min, double& y_max) const override;
 
  private:
   double x_min_ = 0, x_max_ = 0, y_min_ = 0, y_max_ = 0;

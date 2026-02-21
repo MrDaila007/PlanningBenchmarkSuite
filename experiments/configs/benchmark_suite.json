@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "experiments": [
+    {
+      "environment": {"type":"grid","width":20,"height":20,"generator":"random_uniform","obstacle_density":0.1,"seed":42},
+      "planner": "astar",
+      "start": [0,0],
+      "goal": [19,19],
+      "repeats": 5
+    },
+    {
+      "environment": {"type":"grid","width":20,"height":20,"generator":"random_uniform","obstacle_density":0.1,"seed":42},
+      "planner": "dijkstra",
+      "start": [0,0],
+      "goal": [19,19],
+      "repeats": 5
+    },
+    {
+      "environment": {"type":"grid","width":20,"height":20,"generator":"random_uniform","obstacle_density":0.15,"seed":123},
+      "planner": "thetastar",
+      "start": [0,0],
+      "goal": [19,19],
+      "repeats": 5
+    },
+    {
+      "environment": {"type":"grid","width":15,"height":15,"generator":"random_uniform","obstacle_density":0.2,"seed":42},
+      "planner": "prm",
+      "planner_params": {"num_samples": 200, "k_neighbors": 8},
+      "start": [0,0],
+      "goal": [14,14],
+      "repeats": 3
+    }
+  ]
+}

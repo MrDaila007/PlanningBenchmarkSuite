@@ -30,6 +30,12 @@ double ContinuousEnvironment::clearance(const State& s) const {
   return checker_.clearance_at(Point2D(s.x, s.y));
 }
 
+bool ContinuousEnvironment::get_bounds(double& x_min, double& x_max,
+                                       double& y_min, double& y_max) const {
+  x_min = x_min_; x_max = x_max_; y_min = y_min_; y_max = y_max_;
+  return true;
+}
+
 ContinuousEnvironment ContinuousEnvironment::from_json(const std::string& json) {
   auto j = nlohmann::json::parse(json);
   double x_min = j["bounds"]["x_min"];

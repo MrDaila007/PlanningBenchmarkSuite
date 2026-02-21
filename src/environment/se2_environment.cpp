@@ -21,4 +21,9 @@ double SE2Environment::clearance(const State& s) const {
   return base_->clearance(s);
 }
 
+bool SE2Environment::get_bounds(double& x_min, double& x_max,
+                                 double& y_min, double& y_max) const {
+  return base_->get_bounds(x_min, x_max, y_min, y_max);
+}
+
 }  // namespace pbs

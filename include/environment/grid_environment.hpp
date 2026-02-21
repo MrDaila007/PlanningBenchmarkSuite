@@ -18,6 +18,7 @@ class GridEnvironment : public IEnvironment {
   int width() const { return width_; }
   int height() const { return height_; }
   bool occupied(int row, int col) const;
+  bool get_bounds(double& x_min, double& x_max, double& y_min, double& y_max) const override;
 
   static GridEnvironment from_json(const std::string& json);
   std::string to_json() const;

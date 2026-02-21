@@ -6,6 +6,7 @@ add_executable(test_structure
   test_planners.cpp
   test_continuous.cpp
   test_benchmark.cpp
+  test_sampling.cpp
 )
 target_link_libraries(test_structure PRIVATE planning_benchmark planners
   GTest::gtest_main)

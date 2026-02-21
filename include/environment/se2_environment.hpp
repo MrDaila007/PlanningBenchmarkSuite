@@ -13,6 +13,7 @@ class SE2Environment : public IEnvironment {
   bool is_valid(const State& s) const override;
   bool collision_free(const State& a, const State& b) const override;
   double clearance(const State& s) const override;
+  bool get_bounds(double& x_min, double& x_max, double& y_min, double& y_max) const override;
 
  private:
   std::shared_ptr<ContinuousEnvironment> base_;

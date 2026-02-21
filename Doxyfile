@@ -1,0 +1,17 @@
+PROJECT_NAME           = "Planning Benchmark Suite"
+PROJECT_NUMBER         = "0.1"
+INPUT                  = include src
+RECURSIVE              = YES
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+REFERENCED_BY_RELATION  = YES
+REFERENCES_RELATION    = YES
+FILE_PATTERNS          = *.hpp *.cpp
+EXCLUDE_PATTERNS       = */test* */googletest/*
+USE_HTAGS              = NO
+QUIET                  = YES

@@ -38,6 +38,13 @@ double GridEnvironment::clearance(const State& /*s*/) const {
   return 0.0;  // Stub
 }
 
+bool GridEnvironment::get_bounds(double& x_min, double& x_max,
+                                 double& y_min, double& y_max) const {
+  x_min = 0; x_max = static_cast<double>(width_);
+  y_min = 0; y_max = static_cast<double>(height_);
+  return true;
+}
+
 bool GridEnvironment::occupied(int row, int col) const {
   if (row < 0 || row >= height_ || col < 0 || col >= width_)
     return true;

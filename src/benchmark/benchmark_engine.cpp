@@ -7,6 +7,11 @@
 #include "planners/astar.hpp"
 #include "planners/weighted_astar.hpp"
 #include "planners/thetastar.hpp"
+#include "planners/prm.hpp"
+#include "planners/lazy_prm.hpp"
+#include "planners/rrt.hpp"
+#include "planners/rrt_star.hpp"
+#include "planners/informed_rrt_star.hpp"
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
@@ -27,6 +32,36 @@ std::unique_ptr<IPlanner> create_planner(const std::string& name,
     return std::make_unique<WeightedAStarPlanner>(HeuristicType::Diagonal, w);
   }
   if (name == "thetastar") return std::make_unique<ThetaStarPlanner>();
+  if (name == "prm") {
+    int n = params.value("num_samples", 500);
+    int k = params.value("k_neighbors", 10);
+    return std::make_unique<PRMPlanner>(n, k);
+  }
+  if (name == "lazy_prm") {
+    int n = params.value("num_samples", 500);
+    int k = params.value("k_neighbors", 10);
+    return std::make_unique<LazyPRMPlanner>(n, k);
+  }
+  if (name == "rrt") {
+    double step = params.value("step_size", 1.0);
+    double bias = params.value("goal_bias", 0.1);
+    int max_i = params.value("max_iter", 5000);
+    return std::make_unique<RRTPlanner>(step, bias, max_i);
+  }
+  if (name == "rrt_star") {
+    double step = params.value("step_size", 1.0);
+    double bias = params.value("goal_bias", 0.1);
+    int max_i = params.value("max_iter", 5000);
+    double gamma = params.value("rewiring_radius_factor", 10.0);
+    return std::make_unique<RRTStarPlanner>(step, bias, max_i, gamma);
+  }
+  if (name == "informed_rrt_star") {
+    double step = params.value("step_size", 1.0);
+    double bias = params.value("goal_bias", 0.1);
+    int max_i = params.value("max_iter", 5000);
+    double gamma = params.value("rewiring_radius_factor", 10.0);
+    return std::make_unique<InformedRRTStarPlanner>(step, bias, max_i, gamma);
+  }
   return nullptr;
 }
 
@@ -39,6 +74,16 @@ int get_nodes(const IPlanner* p) {
     return w->nodes_expanded();
   if (auto* t = dynamic_cast<const ThetaStarPlanner*>(p))
     return t->nodes_expanded();
+  if (auto* prm = dynamic_cast<const PRMPlanner*>(p))
+    return prm->nodes_expanded();
+  if (auto* lprm = dynamic_cast<const LazyPRMPlanner*>(p))
+    return lprm->nodes_expanded();
+  if (auto* rrt = dynamic_cast<const RRTPlanner*>(p))
+    return rrt->nodes_expanded();
+  if (auto* rrtstar = dynamic_cast<const RRTStarPlanner*>(p))
+    return rrtstar->nodes_expanded();
+  if (auto* irrt = dynamic_cast<const InformedRRTStarPlanner*>(p))
+    return irrt->nodes_expanded();
   return 0;
 }
 

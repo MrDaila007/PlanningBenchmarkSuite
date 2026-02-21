@@ -16,7 +16,7 @@
 | 4. Ревью архитектуры | ✅ Выполнено | 1/2 | docs/architecture_review.md |
 | 5. Планирование | ✅ Выполнено | 1/1 | plan.md, tasks/*.md |
 | 6. Ревью плана | ✅ Выполнено | 1/1 | plan_review.md |
-| 7. Разработка | 🔄 В работе | Задачи 1.1–5.3 | 28/28 тестов |
+| 7. Разработка | 🔄 В работе | Задачи 1.1–8.1 | 38/38 тестов |
 
 ---
 
@@ -32,10 +32,14 @@
 | 2.4 ContinuousEnv, SE2 | ✅ | ContinuousEnvironment, SE2Environment |
 | 3.1 Dijkstra, A* | ✅ | Min-heap, 8-connected |
 | 3.2 Weighted A*, Theta* | ✅ | w*A*, any-angle Theta* |
-| 4.1–4.3 PRM, RRT, RRT* | ⏳ | — |
+| 4.1 PRM, Lazy PRM | ✅ | KD-tree, k-NN, lazy collision |
+| 4.2 RRT, RRT* | ✅ | step_size, goal_bias, rewiring |
+| 4.3 Informed RRT* | ✅ | Ellipsoid sampling, convergence |
 | 5.1 Metrics | ✅ | MetricsCollector |
 | 5.2–5.3 Benchmark, CLI | ✅ | Batch run, JSON export |
-| 6.1–8.1 Python, CI, Docs | ⏳ | — |
+| 6.1 pybind11 | ✅ | State, Path, planners, run_benchmark |
+| 7.1–7.2 CI, Docker | ✅ | GitHub Actions, Dockerfile |
+| 8.1 Документация | 🔄 | Doxygen, README, REPLICATION |
 
 ---
 
@@ -51,3 +55,5 @@
 | План разработки | plan.md | ✅ Готово |
 | Описания задач | tasks/task_*.md | ✅ 18 задач |
 | Ревью плана | plan_review.md | ✅ Утверждён |
+| CI | .github/workflows/ci.yml | ✅ |
+| Docker | docker/Dockerfile | ✅ |
